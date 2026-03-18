@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { ChangeEvent } from "react";
 import { useEffect, useState } from "react";
 
@@ -32,7 +33,38 @@ const currencyFormatter = new Intl.NumberFormat("es-MX", {
 const productHighlights = [
   "Preparado al momento",
   "Salsas y toppings al gusto",
-  "Ideal para pedidos locales",
+  "Tradicion desde 1990",
+];
+
+const productTags = ["Popular", "Antojito estrella", "Hecho al momento"];
+const whatsappPhone = process.env.NEXT_PUBLIC_WHATSAPP_PHONE || "";
+const storeBenefits = [
+  {
+    title: "Entrega local",
+    copy: "Pedidos listos y saliendo rapido",
+    icon: "🚚",
+  },
+  {
+    title: "Sabor casero",
+    copy: "Recetas preparadas al momento",
+    icon: "🌽",
+  },
+  {
+    title: "Precios claros",
+    copy: "Sin sorpresas al finalizar compra",
+    icon: "💸",
+  },
+  {
+    title: "Compra facil",
+    copy: "Carrito simple y pedido directo",
+    icon: "🛒",
+  },
+];
+
+const brandStory = [
+  "ELOTES DE LA FUENTE celebra el antojo mexicano con una imagen mas solida, tradicional y memorable.",
+  "La marca mezcla cercania familiar, sabor callejero y una presentacion con caracter artesanal.",
+  "El objetivo es que cada punto de contacto, desde la web hasta el empaque, se sienta propio y reconocible.",
 ];
 
 export default function Home() {
@@ -218,6 +250,26 @@ export default function Home() {
 
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
   const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const whatsappMessage = encodeURIComponent(
+    [
+      "Hola, quiero pedir en ELOTES DE LA FUENTE.",
+      ...cart.map(
+        (item) =>
+          `- ${item.name} x${item.quantity} (${currencyFormatter.format(
+            item.price * item.quantity
+          )})`
+      ),
+      `Total: ${currencyFormatter.format(total)}`,
+      checkoutForm.name ? `Cliente: ${checkoutForm.name}` : "",
+      checkoutForm.address ? `Direccion: ${checkoutForm.address}` : "",
+    ]
+      .filter(Boolean)
+      .join("\n")
+  );
+  const whatsappHref =
+    whatsappPhone && cart.length > 0
+      ? `https://wa.me/${whatsappPhone}?text=${whatsappMessage}`
+      : "";
 
   const renderProductVisual = (product: Product) => {
     const image = product.image.trim();
@@ -235,15 +287,45 @@ export default function Home() {
 
   return (
     <main className="page-shell">
-      <section className="hero">
+      <header className="store-nav">
+        <div className="brand-block">
+          <img
+            alt="Logo ELOTES DE LA FUENTE"
+            className="brand-logo"
+            src="/logo-elotesdelafuente.svg"
+          />
+          <div>
+            <p className="brand-name">ELOTES DE LA FUENTE</p>
+            <p className="brand-subtitle">elotes, esquites y antojitos</p>
+          </div>
+        </div>
+        <nav className="top-links" aria-label="Principal">
+          <a href="#menu">Menu</a>
+          <a href="#beneficios">Beneficios</a>
+          <Link href="/admin">Admin</Link>
+        </nav>
+      </header>
+
+      <section className="hero hero-organic">
         <p className="hero-kicker">Antojitos con sabor a casa</p>
         <div className="hero-grid">
-          <div>
-            <h1>Elotes, esquites y botanitas con toque de la fuente.</h1>
+          <div className="hero-visual">
+            <div className="hero-plate">
+              <div className="hero-snack hero-snack-main">🌽</div>
+              <div className="hero-snack hero-snack-side">🥣</div>
+              <div className="hero-snack hero-snack-small">🌶️</div>
+              <div className="hero-leaf leaf-one" aria-hidden="true" />
+              <div className="hero-leaf leaf-two" aria-hidden="true" />
+            </div>
+          </div>
+
+          <div className="hero-copy-block">
+            <p className="hero-detail">Marca oficial de elotesdelafuente.com</p>
+            <h1>El sabor de siempre, ahora con presencia de marca y pedido en linea.</h1>
             <p className="hero-copy">
-              Tu nuevo proyecto ya tiene una base de tienda en linea. Deje esta
-              portada lista para crecer con pedidos, autenticacion y checkout
-              real, pero desde ahora ya se siente como una marca.
+              ELOTES DE LA FUENTE nace como una marca tradicional, cercana y con
+              caracter propio. La experiencia digital ahora refleja ese tono: mas
+              artesanal, mas memorable y lista para crecer como negocio real.
             </p>
             <div className="hero-badges">
               {productHighlights.map((highlight) => (
@@ -252,130 +334,61 @@ export default function Home() {
                 </span>
               ))}
             </div>
+            <div className="hero-actions">
+              <a className="button-primary" href="#menu">
+                Ver menu
+              </a>
+              <Link className="button-secondary" href="/admin">
+                Ver panel admin
+              </Link>
+            </div>
+            <p className="hero-domain">Dominio definido: elotesdelafuente.com</p>
           </div>
-
-          <aside className="panel cart-panel">
-            <h2>Tu carrito</h2>
-            <p>{totalItems} articulo(s) agregados</p>
-
-            <div className="cart-items">
-              {cart.length === 0 ? (
-                <div className="empty-state">
-                  Agrega un producto para empezar a armar tu pedido.
-                </div>
-              ) : (
-                cart.map((item) => (
-                  <article className="cart-item" key={item.id}>
-                    <div className="cart-summary-row">
-                      <div>
-                        <h3>{item.name}</h3>
-                        <p>
-                          {item.quantity} x {currencyFormatter.format(item.price)}
-                        </p>
-                      </div>
-                      <strong>{currencyFormatter.format(item.price * item.quantity)}</strong>
-                    </div>
-                    <p className="meta-text">Stock disponible: {item.stock}</p>
-                    <button
-                      className="button-danger"
-                      onClick={() => removeFromCart(item.id)}
-                      type="button"
-                    >
-                      Quitar
-                    </button>
-                  </article>
-                ))
-              )}
-            </div>
-
-            <div className="cart-summary">
-              <div className="checkout-form">
-                <div className="checkout-form-header">
-                  <h3>Datos de entrega</h3>
-                  <p>Estos datos se guardan junto con tu pedido.</p>
-                </div>
-                <label className="field">
-                  <span>Nombre</span>
-                  <input
-                    name="name"
-                    onChange={handleCheckoutFieldChange}
-                    placeholder="Tu nombre"
-                    type="text"
-                    value={checkoutForm.name}
-                  />
-                </label>
-                <label className="field">
-                  <span>Correo</span>
-                  <input
-                    name="email"
-                    onChange={handleCheckoutFieldChange}
-                    placeholder="correo@ejemplo.com"
-                    type="email"
-                    value={checkoutForm.email}
-                  />
-                </label>
-                <label className="field">
-                  <span>Telefono</span>
-                  <input
-                    name="phone"
-                    onChange={handleCheckoutFieldChange}
-                    placeholder="81 0000 0000"
-                    type="tel"
-                    value={checkoutForm.phone}
-                  />
-                </label>
-                <label className="field">
-                  <span>Direccion</span>
-                  <textarea
-                    name="address"
-                    onChange={handleCheckoutFieldChange}
-                    placeholder="Calle, numero, colonia y referencias"
-                    rows={3}
-                    value={checkoutForm.address}
-                  />
-                </label>
-                <label className="field">
-                  <span>Notas para el pedido</span>
-                  <textarea
-                    name="notes"
-                    onChange={handleCheckoutFieldChange}
-                    placeholder="Sin chile, extra queso, tocar al llegar..."
-                    rows={3}
-                    value={checkoutForm.notes}
-                  />
-                </label>
-              </div>
-              <div className="cart-summary-row">
-                <span>Total</span>
-                <span className="cart-total">{currencyFormatter.format(total)}</span>
-              </div>
-              {checkoutMessage ? (
-                <div className={`status-message ${checkoutStatus === "error" ? "error" : ""}`}>
-                  {checkoutMessage}
-                </div>
-              ) : null}
-              <button
-                className="button-primary"
-                disabled={cart.length === 0 || isCheckingOut}
-                onClick={checkout}
-                type="button"
-              >
-                {isCheckingOut ? "Procesando..." : "Finalizar compra"}
-              </button>
-              <p className="checkout-note">
-                El checkout ya guarda ordenes reales en Prisma con control de stock.
-              </p>
-            </div>
-          </aside>
         </div>
       </section>
 
-      <section className="content-grid">
-        <div className="panel catalog-panel">
+      <section className="benefits-strip" id="beneficios">
+        {storeBenefits.map((benefit) => (
+          <article className="benefit-card" key={benefit.title}>
+            <span className="benefit-icon" aria-hidden="true">
+              {benefit.icon}
+            </span>
+            <div>
+              <h3>{benefit.title}</h3>
+              <p>{benefit.copy}</p>
+            </div>
+          </article>
+        ))}
+      </section>
+
+      <section className="brand-story panel">
+        <div className="brand-story-copy">
+          <p className="hero-kicker">Nuestra historia</p>
+          <h2>Tradicion que se sirve caliente.</h2>
+          {brandStory.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
+        <div className="brand-story-card">
+          <img
+            alt="Isotipo ELOTES DE LA FUENTE"
+            className="brand-story-logo"
+            src="/isotipo-elotesdelafuente.svg"
+          />
+          <div className="brand-story-meta">
+            <span>Marca oficial</span>
+            <strong>ELOTES DE LA FUENTE</strong>
+            <p>elotesdelafuente.com</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="content-grid content-grid-store">
+        <div className="panel catalog-panel" id="menu">
           <div className="section-heading">
             <div>
-              <h2>Menu disponible</h2>
-              <p>Productos sincronizados desde Prisma.</p>
+              <h2>Los mas pedidos</h2>
+              <p>Seleccion principal de la casa, presentada con la nueva identidad visual.</p>
             </div>
             <button className="button-secondary" type="button">
               {products.length} producto(s)
@@ -394,13 +407,23 @@ export default function Home() {
             <div className="products-grid">
               {products.map((product) => {
                 const isOutOfStock = product.stock <= 0;
+                const productTag = productTags[product.name.length % productTags.length];
 
                 return (
                   <article className="product-card" key={product.id}>
-                    <div className="product-emoji" aria-hidden="true">
-                      {renderProductVisual(product)}
+                    <div className="product-media">
+                      <div className="product-media-top">
+                        <span className="product-tag">{productTag}</span>
+                        <span className={`product-stock-badge ${isOutOfStock ? "sold-out" : ""}`}>
+                          {isOutOfStock ? "Agotado" : `${product.stock} listos`}
+                        </span>
+                      </div>
+                      <div className="product-emoji" aria-hidden="true">
+                        {renderProductVisual(product)}
+                      </div>
+                      <div className="product-glow" aria-hidden="true" />
                     </div>
-                    <div>
+                    <div className="product-content">
                       <h3>{product.name}</h3>
                       <p className="product-description">{product.description}</p>
                     </div>
@@ -409,11 +432,7 @@ export default function Home() {
                         <div className="price">
                           {currencyFormatter.format(product.price)}
                         </div>
-                        <div className="stock">
-                          {isOutOfStock
-                            ? "Agotado"
-                            : `${product.stock} disponibles`}
-                        </div>
+                        <div className="stock">Listo para entrega local</div>
                       </div>
                       <button
                         className="button-primary"
@@ -430,6 +449,130 @@ export default function Home() {
             </div>
           )}
         </div>
+
+        <aside className="panel cart-panel">
+          <h2>Tu carrito</h2>
+          <p>{totalItems} articulo(s) agregados</p>
+
+          <div className="cart-items">
+            {cart.length === 0 ? (
+              <div className="empty-state">
+                Agrega un producto para empezar a armar tu pedido.
+              </div>
+            ) : (
+              cart.map((item) => (
+                <article className="cart-item" key={item.id}>
+                  <div className="cart-summary-row">
+                    <div>
+                      <h3>{item.name}</h3>
+                      <p>
+                        {item.quantity} x {currencyFormatter.format(item.price)}
+                      </p>
+                    </div>
+                    <strong>{currencyFormatter.format(item.price * item.quantity)}</strong>
+                  </div>
+                  <p className="meta-text">Stock disponible: {item.stock}</p>
+                  <button
+                    className="button-danger"
+                    onClick={() => removeFromCart(item.id)}
+                    type="button"
+                  >
+                    Quitar
+                  </button>
+                </article>
+              ))
+            )}
+          </div>
+
+          <div className="cart-summary">
+            <div className="checkout-form">
+              <div className="checkout-form-header">
+                <h3>Datos de entrega</h3>
+                <p>Estos datos se guardan junto con tu pedido.</p>
+              </div>
+              <label className="field">
+                <span>Nombre</span>
+                <input
+                  name="name"
+                  onChange={handleCheckoutFieldChange}
+                  placeholder="Tu nombre"
+                  type="text"
+                  value={checkoutForm.name}
+                />
+              </label>
+              <label className="field">
+                <span>Correo</span>
+                <input
+                  name="email"
+                  onChange={handleCheckoutFieldChange}
+                  placeholder="correo@ejemplo.com"
+                  type="email"
+                  value={checkoutForm.email}
+                />
+              </label>
+              <label className="field">
+                <span>Telefono</span>
+                <input
+                  name="phone"
+                  onChange={handleCheckoutFieldChange}
+                  placeholder="81 0000 0000"
+                  type="tel"
+                  value={checkoutForm.phone}
+                />
+              </label>
+              <label className="field">
+                <span>Direccion</span>
+                <textarea
+                  name="address"
+                  onChange={handleCheckoutFieldChange}
+                  placeholder="Calle, numero, colonia y referencias"
+                  rows={3}
+                  value={checkoutForm.address}
+                />
+              </label>
+              <label className="field">
+                <span>Notas para el pedido</span>
+                <textarea
+                  name="notes"
+                  onChange={handleCheckoutFieldChange}
+                  placeholder="Sin chile, extra queso, tocar al llegar..."
+                  rows={3}
+                  value={checkoutForm.notes}
+                />
+              </label>
+            </div>
+            <div className="cart-summary-row">
+              <span>Total</span>
+              <span className="cart-total">{currencyFormatter.format(total)}</span>
+            </div>
+            {checkoutMessage ? (
+              <div className={`status-message ${checkoutStatus === "error" ? "error" : ""}`}>
+                {checkoutMessage}
+              </div>
+            ) : null}
+            <button
+              className="button-primary"
+              disabled={cart.length === 0 || isCheckingOut}
+              onClick={checkout}
+              type="button"
+            >
+              {isCheckingOut ? "Procesando..." : "Finalizar compra"}
+            </button>
+            {whatsappHref ? (
+              <a
+                className="button-secondary button-full"
+                href={whatsappHref}
+                rel="noreferrer"
+                target="_blank"
+              >
+                Enviar pedido por WhatsApp
+              </a>
+            ) : null}
+            <p className="checkout-note">
+              El checkout ya guarda ordenes reales en Prisma con control de stock.
+            </p>
+          </div>
+        </aside>
       </section>
     </main>
   );

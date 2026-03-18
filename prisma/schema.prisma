@@ -28,6 +28,7 @@ model Product {
   stock       Int
   description String
   image       String
+  orderItems   OrderItem[]
 }
 
 model Order {
@@ -52,4 +53,5 @@ model OrderItem {
   price     Float
 
   order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
 }

@@ -1,0 +1,17 @@
+<svg width="420" height="420" viewBox="0 0 420 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="420" height="420" rx="36" fill="#F6F1E6"/>
+  <path d="M210 46L317 88V195C317 275 270 333 210 370C150 333 103 275 103 195V88L210 46Z" fill="#435628"/>
+  <path d="M210 62L303 99V193C303 266 261 318 210 352C159 318 117 266 117 193V99L210 62Z" stroke="#DAB45C" stroke-width="8"/>
+  <path d="M210 158C185 158 166 181 166 207C166 233 185 259 210 286C235 259 254 233 254 207C254 181 235 158 210 158Z" fill="#F6CF57"/>
+  <path d="M182 193C190 170 203 152 210 146C217 152 230 170 238 193V289H182V193Z" fill="#F4D05D"/>
+  <path d="M174 187C162 203 155 221 152 247C163 236 174 231 186 228V187H174Z" fill="#7E9B49"/>
+  <path d="M246 187C258 203 265 221 268 247C257 236 246 231 234 228V187H246Z" fill="#7E9B49"/>
+  <path d="M171 290C184 268 192 252 210 240C228 252 236 268 249 290H171Z" fill="#B9CF7A"/>
+  <circle cx="198" cy="206" r="4" fill="#4A3826"/>
+  <circle cx="222" cy="206" r="4" fill="#4A3826"/>
+  <path d="M198 223C203 228 217 228 222 223" stroke="#4A3826" stroke-width="4" stroke-linecap="round"/>
+  <path d="M160 323C181 335 191 338 210 340C229 338 239 335 260 323" stroke="#DAB45C" stroke-width="8" stroke-linecap="round"/>
+  <text x="210" y="120" text-anchor="middle" fill="#F8F4EA" font-family="Georgia, serif" font-size="38" font-weight="700">Elotes</text>
+  <text x="210" y="160" text-anchor="middle" fill="#F8F4EA" font-family="Georgia, serif" font-size="38" font-weight="700">De La Fuente</text>
+  <text x="210" y="315" text-anchor="middle" fill="#F8F4EA" font-family="Georgia, serif" font-size="20" font-weight="700">DESDE 1990</text>
+</svg>

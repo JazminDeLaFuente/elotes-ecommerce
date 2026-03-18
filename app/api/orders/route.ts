@@ -32,6 +32,30 @@ const isValidOrderItem = (item: unknown): item is OrderRequestItem => {
   );
 };
 
+export async function GET() {
+  try {
+    const orders = await prisma.order.findMany({
+      orderBy: {
+        id: "desc",
+      },
+      include: {
+        items: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
+
+    return NextResponse.json(orders);
+  } catch {
+    return NextResponse.json(
+      { error: "No se pudieron cargar los pedidos." },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();

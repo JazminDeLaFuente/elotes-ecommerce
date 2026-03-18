@@ -1,20 +1,27 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://elotesdelafuente.com";
 
 export const metadata: Metadata = {
-  title: "Elotes de la Fuente",
-  description: "Tienda en linea de elotes, esquites y antojitos preparados.",
+  metadataBase: new URL(siteUrl),
+  title: "ELOTES DE LA FUENTE",
+  description:
+    "Elotes, esquites y antojitos preparados con sabor tradicional y pedido en linea.",
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/isotipo-elotesdelafuente.svg",
+  },
+  openGraph: {
+    title: "ELOTES DE LA FUENTE",
+    description:
+      "Tradicion, sabor y antojitos preparados en una tienda en linea con identidad propia.",
+    url: siteUrl,
+    siteName: "ELOTES DE LA FUENTE",
+    images: ["/logo-elotesdelafuente.svg"],
+  },
 };
 
 export default function RootLayout({
@@ -24,11 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
